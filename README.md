@@ -49,6 +49,7 @@ php bin/console doctrine:migrations:migrate
 
 Puis crée ton compte admin et les services de démonstration :
 
+<<<<<<<<<<<<<<repriseici>>>>>>>>>>>>>>
 ```bash
 php bin/console app:create-admin admin@kreative-studio.fr "MotDePasseSolide123!"
 php bin/console app:seed-services

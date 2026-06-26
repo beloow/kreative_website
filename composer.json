@@ -12,25 +12,26 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.1",
         "easycorp/easyadmin-bundle": "^4.10",
-        "symfony/asset": "7.1.*",
-        "symfony/console": "7.1.*",
-        "symfony/dotenv": "7.1.*",
+        "symfony/asset": "^7.1",
+        "symfony/console": "^7.1",
+        "symfony/dotenv": "^7.1",
         "symfony/flex": "^2",
-        "symfony/form": "7.1.*",
-        "symfony/framework-bundle": "7.1.*",
-        "symfony/mailer": "7.1.*",
-        "symfony/runtime": "7.1.*",
-        "symfony/security-bundle": "7.1.*",
-        "symfony/translation": "7.1.*",
-        "symfony/twig-bundle": "7.1.*",
-        "symfony/validator": "7.1.*",
-        "symfony/yaml": "7.1.*",
+        "symfony/form": "^7.1",
+        "symfony/framework-bundle": "^7.1",
+        "symfony/mailer": "^7.1",
+        "symfony/runtime": "^7.1",
+        "symfony/security-bundle": "^7.1",
+        "symfony/translation": "^7.1",
+        "symfony/twig-bundle": "^7.1",
+        "symfony/validator": "^7.1",
+        "symfony/var-exporter": "^7.1",
+        "symfony/yaml": "^7.1",
         "twig/extra-bundle": "^3.10",
         "twig/twig": "^3.10"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.61",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "^7.1"
     },
     "config": {
         "allow-plugins": {
@@ -72,7 +73,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.1.*"
+            "require": "^7.1"
         }
     }
 }
