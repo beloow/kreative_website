@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Services — Kreative Studio{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container">
+        <div class="section__head">
+            <span class="eyebrow">Nos services</span>
+            <h1>Une équipe marketing complète, à la carte</h1>
+            <p>Que vous ayez besoin d'un seul levier ou d'un accompagnement global, chaque offre est pensée pour des PME qui veulent des résultats mesurables sans gérer une équipe en interne.</p>
+        </div>
+
+        <div class="services-grid">
+            {% for service in services %}
+                <div class="service-card">
+                    <div class="service-card__icon">{{ include('service/_icon.html.twig', {icon: service.icon}) }}</div>
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                    <span class="service-card__price">{{ service.priceFrom }}</span>
+                </div>
+            {% else %}
+                <p>Les services seront bientôt disponibles — ajoute-les depuis l'espace admin.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container">
+        <div class="cta-band">
+            <h2>Vous ne savez pas par où commencer ?</h2>
+            <p>On vous propose gratuitement un plan d'action priorisé selon votre budget et vos objectifs.</p>
+            <a href="{{ path('contact') }}" class="btn btn--primary">Demander un plan gratuit</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

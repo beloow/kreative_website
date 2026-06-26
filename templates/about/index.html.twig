@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos — Kreative Studio{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container split">
+        <div>
+            <span class="eyebrow">Notre histoire</span>
+            <h1>Un studio pensé pour les PME, pas pour les grands comptes.</h1>
+            <p>Kreative Studio est né d'un constat simple : les petites et moyennes entreprises ont besoin d'un marketing digital sérieux, mais n'ont ni le temps ni le budget pour monter une équipe interne complète.</p>
+            <p>Nous agissons comme votre département marketing externalisé : nous pilotons votre visibilité, votre contenu et vos campagnes, avec la même rigueur qu'une agence pour grands comptes — mais à taille humaine.</p>
+
+            <div class="stat-row">
+                <div class="stat-row__item">
+                    <span class="stat-row__number">40+</span>
+                    <span class="stat-row__label">PME accompagnées</span>
+                </div>
+                <div class="stat-row__item">
+                    <span class="stat-row__number">6</span>
+                    <span class="stat-row__label">ans d'expérience</span>
+                </div>
+                <div class="stat-row__item">
+                    <span class="stat-row__number">3,2x</span>
+                    <span class="stat-row__label">trafic moyen généré</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration abstraite représentant la croissance">
+                <circle cx="210" cy="210" r="180" fill="none" stroke="#1c2e4d" stroke-width="1"/>
+                <circle cx="210" cy="210" r="130" fill="none" stroke="#1c2e4d" stroke-width="1"/>
+                <circle cx="210" cy="210" r="80" fill="none" stroke="#1c2e4d" stroke-width="1"/>
+                <path d="M90 280 C 140 280, 160 200, 210 190 C 260 180, 280 110, 340 95"
+                      fill="none" stroke="#d2b48c" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="340" cy="95" r="8" fill="#d2b48c"/>
+                <circle cx="90" cy="280" r="6" fill="#0A1726" stroke="#d2b48c" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container">
+        <div class="section__head">
+            <span class="eyebrow">Notre méthode</span>
+            <h2>Ce qui guide chaque mission</h2>
+        </div>
+        <ul class="value-list" style="max-width:640px;">
+            <li>
+                <span class="tick">✓</span>
+                <div>
+                    <strong>Transparence totale.</strong> Vous accédez à vos résultats et vos rapports en toute clarté, sans jargon ni boîte noire.
+                </div>
+            </li>
+            <li>
+                <span class="tick">✓</span>
+                <div>
+                    <strong>Engagement sur les résultats.</strong> Chaque action est reliée à un objectif business mesurable : leads, ventes, notoriété.
+                </div>
+            </li>
+            <li>
+                <span class="tick">✓</span>
+                <div>
+                    <strong>Flexibilité de PME à PME.</strong> Pas d'engagement rigide sur 24 mois : nos accompagnements s'adaptent à votre rythme de croissance.
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion admin — Kreative Studio{% endblock %}
+
+{% block body %}
+<section class="auth-screen">
+    <form method="post" class="auth-card">
+        <h1 class="auth-card__title">Espace admin</h1>
+        <p class="auth-card__subtitle">Connecte-toi pour gérer le contenu du site.</p>
+
+        {% if error %}
+            <div class="alert alert--error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <label for="username">Adresse e-mail</label>
+        <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus>
+
+        <label for="password">Mot de passe</label>
+        <input type="password" name="_password" id="password" autocomplete="current-password" required>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit" class="btn btn--primary btn--block">Se connecter</button>
+    </form>
+</section>
+{% endblock %}

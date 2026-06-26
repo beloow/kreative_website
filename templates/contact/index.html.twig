@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact — Kreative Studio{% endblock %}
+
+{% block body %}
+<section class="section">
+    <div class="container contact-layout">
+        <div class="contact-info">
+            <span class="eyebrow">Contact</span>
+            <h1>Parlons de votre croissance.</h1>
+            <p style="color:var(--color-text-muted); margin-bottom:32px;">Remplissez le formulaire, nous revenons vers vous en moins de 24h ouvrées avec un premier retour concret.</p>
+
+            <div class="contact-info__item">
+                <span class="eyebrow">E-mail</span>
+                <div>contact@kreative-studio.fr</div>
+            </div>
+            <div class="contact-info__item">
+                <span class="eyebrow">Zone d'intervention</span>
+                <div>France entière — full remote</div>
+            </div>
+            <div class="contact-info__item">
+                <span class="eyebrow">Délai de réponse</span>
+                <div>Sous 24h ouvrées</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            {{ form_start(form) }}
+                <div class="form-row">
+                    {{ form_label(form.fullName) }}
+                    {{ form_widget(form.fullName) }}
+                    <div class="form-errors">{{ form_errors(form.fullName) }}</div>
+                </div>
+                <div class="form-row">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email) }}
+                    <div class="form-errors">{{ form_errors(form.email) }}</div>
+                </div>
+                <div class="form-row">
+                    {{ form_label(form.company) }}
+                    {{ form_widget(form.company) }}
+                    <div class="form-errors">{{ form_errors(form.company) }}</div>
+                </div>
+                <div class="form-row">
+                    {{ form_label(form.message) }}
+                    {{ form_widget(form.message) }}
+                    <div class="form-errors">{{ form_errors(form.message) }}</div>
+                </div>
+                <button type="submit" class="btn btn--primary btn--block">Envoyer le message</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+{% endblock %}

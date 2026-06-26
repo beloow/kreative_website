@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<section class="hero">
+    <div class="container hero__grid">
+        <div>
+            <span class="eyebrow">Marketing digital externalisé</span>
+            <h1 class="hero__title">Déléguez votre croissance,<br><em>concentrez-vous sur votre métier.</em></h1>
+            <p class="hero__lede">Kreative Studio pilote votre visibilité, votre trafic et vos leads comme une équipe marketing interne — sans les coûts ni la complexité du recrutement.</p>
+            <div class="hero__actions">
+                <a href="{{ path('contact') }}" class="btn btn--primary">Discutons de votre projet</a>
+                <a href="{{ path('service_index') }}" class="btn btn--ghost">Voir nos services</a>
+            </div>
+        </div>
+
+        <div>
+            <svg class="growth-curve" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Courbe illustrant le parcours visibilité, trafic, leads, clients">
+                <line x1="20" y1="320" x2="460" y2="320" stroke="#1c2e4d" stroke-width="1"/>
+                <line x1="20" y1="20" x2="20" y2="320" stroke="#1c2e4d" stroke-width="1"/>
+
+                <path class="growth-curve__path" d="M30 300 C 110 300, 130 230, 170 220 C 230 205, 250 140, 300 120 C 350 100, 370 55, 440 40"
+                      fill="none" stroke="#d2b48c" stroke-width="3.5" stroke-linecap="round"/>
+
+                <g class="growth-curve__point">
+                    <circle cx="30" cy="300" r="6" fill="#0A1726" stroke="#d2b48c" stroke-width="2.5"/>
+                    <text x="42" y="296" class="growth-curve__label">Visibilité</text>
+                </g>
+                <g class="growth-curve__point">
+                    <circle cx="170" cy="220" r="6" fill="#0A1726" stroke="#d2b48c" stroke-width="2.5"/>
+                    <text x="182" y="216" class="growth-curve__label">Trafic</text>
+                </g>
+                <g class="growth-curve__point">
+                    <circle cx="300" cy="120" r="6" fill="#0A1726" stroke="#d2b48c" stroke-width="2.5"/>
+                    <text x="312" y="116" class="growth-curve__label">Leads</text>
+                </g>
+                <g class="growth-curve__point">
+                    <circle cx="440" cy="40" r="7" fill="#d2b48c"/>
+                    <text x="356" y="36" class="growth-curve__value">Clients</text>
+                </g>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="container">
+        <div class="section__head">
+            <span class="eyebrow">Ce que nous faisons</span>
+            <h2>Un studio, toutes vos compétences marketing</h2>
+            <p>Chaque service peut être pris séparément ou combiné dans un plan d'accompagnement mensuel.</p>
+        </div>
+        <div class="services-grid">
+            {% for service in services|slice(0, 3) %}
+                <div class="service-card">
+                    <div class="service-card__icon">{{ include('service/_icon.html.twig', {icon: service.icon}) }}</div>
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                    <span class="service-card__price">{{ service.priceFrom }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:36px;">
+            <a href="{{ path('service_index') }}" class="btn btn--ghost">Voir tous les services →</a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="cta-band">
+            <h2>Prêt à déléguer votre marketing digital ?</h2>
+            <p>Échangeons 20 minutes pour comprendre vos objectifs et vous proposer un plan d'action concret.</p>
+            <a href="{{ path('contact') }}" class="btn btn--primary">Réserver un échange</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
