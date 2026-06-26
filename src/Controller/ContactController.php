@@ -31,10 +31,10 @@ class ContactController extends AbstractController
             $entityManager->flush();
 
             // 2. On notifie l'équipe par e-mail
-            $recipient = $_ENV['CONTACT_RECIPIENT'] ?? 'contact@kreative-studio.fr';
+            $recipient = $_ENV['CONTACT_RECIPIENT'] ?? 'contact@kreativestudio.fr';
 
             $email = (new Email())
-                ->from('site@kreative-studio.fr')
+                ->from('site@kreativestudio.fr')
                 ->to($recipient)
                 ->replyTo($contactMessage->getEmail())
                 ->subject('Nouvelle demande de contact — '.$contactMessage->getFullName())
@@ -53,7 +53,7 @@ class ContactController extends AbstractController
                 // On informe quand même l'utilisateur que sa demande est bien reçue.
             }
 
-            $this->addFlash('success', 'Merci ! Votre message a bien été envoyé, nous vous répondons sous 24h.');
+            $this->addFlash('success', 'Merci ! Votre message a bien été envoyé, nous vous répondons sous 48h.');
 
             return $this->redirectToRoute('contact');
         }
