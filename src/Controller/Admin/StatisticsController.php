@@ -2,10 +2,14 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\ContactMessage;
+use App\Entity\PageView;
 use App\Repository\ContactMessageRepository;
 use App\Repository\PageViewRepository;
 use App\Repository\ServiceRepository;
+use App\Service\TimeSeriesStats;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,11 +24,12 @@ class StatisticsController extends AbstractController
         private readonly PageViewRepository $pageViewRepository,
         private readonly ServiceRepository $serviceRepository,
         private readonly ContactMessageRepository $contactMessageRepository,
+        private readonly TimeSeriesStats $timeSeriesStats,
     ) {
     }
 
     #[Route('/admin/statistiques', name: 'admin_statistics')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $todayStart = new \DateTimeImmutable('today');
         $monthStart = new \DateTimeImmutable('first day of this month');
@@ -37,7 +42,6 @@ class StatisticsController extends AbstractController
         $uniqueVisitorsThisMonth = $this->pageViewRepository->countUniqueVisitorsSince($monthStart);
         $uniqueVisitorsTotal = $this->pageViewRepository->countUniqueVisitorsSince($epoch);
 
-        $dailyCounts = $this->pageViewRepository->countByDay(30);
         $topPages = $this->pageViewRepository->topPagesSince($last30DaysStart, 8);
 
         $totalServices = $this->serviceRepository->count([]);
@@ -47,7 +51,20 @@ class StatisticsController extends AbstractController
         $handledMessages = $this->contactMessageRepository->count(['isHandled' => true]);
         $pendingMessages = $totalMessages - $handledMessages;
         $messagesThisMonth = $this->contactMessageRepository->countSince($monthStart);
-        $monthlyContactCounts = $this->contactMessageRepository->countByMonth(6);
+
+        // Chaque graphique a sa propre période, indépendante de l'autre
+        $trafficPeriod = $request->query->get('traffic_period');
+        if (!TimeSeriesStats::isValidPeriod($trafficPeriod)) {
+            $trafficPeriod = TimeSeriesStats::DEFAULT_PERIOD;
+        }
+
+        $contactPeriod = $request->query->get('contact_period');
+        if (!TimeSeriesStats::isValidPeriod($contactPeriod)) {
+            $contactPeriod = '6m';
+        }
+
+        $trafficCounts = $this->timeSeriesStats->countByPeriod(PageView::class, $trafficPeriod);
+        $contactCounts = $this->timeSeriesStats->countByPeriod(ContactMessage::class, $contactPeriod);
 
         return $this->render('admin/statistics.html.twig', [
             'totalViews' => $totalViews,
@@ -66,8 +83,11 @@ class StatisticsController extends AbstractController
             'pendingPercent' => $totalMessages > 0 ? round($pendingMessages / $totalMessages * 100) : 0,
             'chartWidth' => self::TRAFFIC_CHART_WIDTH,
             'chartHeight' => self::TRAFFIC_CHART_HEIGHT,
-            'chartPoints' => $this->buildChartPoints($dailyCounts, self::TRAFFIC_CHART_WIDTH, self::TRAFFIC_CHART_HEIGHT, self::TRAFFIC_CHART_PAD_X, self::TRAFFIC_CHART_PAD_Y),
-            'contactChartPoints' => $this->buildChartPoints($monthlyContactCounts, self::TRAFFIC_CHART_WIDTH, self::TRAFFIC_CHART_HEIGHT, self::TRAFFIC_CHART_PAD_X, self::TRAFFIC_CHART_PAD_Y),
+            'chartPoints' => $this->buildChartPoints($trafficCounts, self::TRAFFIC_CHART_WIDTH, self::TRAFFIC_CHART_HEIGHT, self::TRAFFIC_CHART_PAD_X, self::TRAFFIC_CHART_PAD_Y),
+            'contactChartPoints' => $this->buildChartPoints($contactCounts, self::TRAFFIC_CHART_WIDTH, self::TRAFFIC_CHART_HEIGHT, self::TRAFFIC_CHART_PAD_X, self::TRAFFIC_CHART_PAD_Y),
+            'trafficPeriod' => $trafficPeriod,
+            'contactPeriod' => $contactPeriod,
+            'periods' => TimeSeriesStats::PERIODS,
         ]);
     }
 

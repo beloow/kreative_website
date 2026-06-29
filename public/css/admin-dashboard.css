@@ -89,6 +89,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 18px;
 }
 .kd-panel__head .kd-panel__title { margin-bottom: 0; }
@@ -161,6 +163,30 @@
 }
 .kd-table tr:last-child td { border-bottom: none; }
 .kd-table__empty { text-align: center; color: var(--kd-navy-soft); padding: 24px; }
+
+/* ---- Sélecteur de période (coin supérieur droit d'un graphique) ---- */
+.kd-period-selector {
+  display: flex;
+  gap: 4px;
+  background: #f0ece2;
+  border-radius: 999px;
+  padding: 3px;
+  flex-wrap: wrap;
+}
+.kd-period-btn {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--kd-navy-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.kd-period-btn:hover { color: var(--kd-navy); }
+.kd-period-btn.is-active {
+  background: var(--kd-tan, #d2b48c);
+  color: var(--kd-navy);
+}
 
 .kd-badge {
   display: inline-block;

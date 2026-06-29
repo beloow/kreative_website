@@ -40,7 +40,16 @@
     </div>
 
     <div class="kd-panel kd-panel--chart" style="margin-bottom: 24px;">
-        <h3 class="kd-panel__title">Trafic — 30 derniers jours</h3>
+        <div class="kd-panel__head">
+            <h3 class="kd-panel__title">Trafic</h3>
+            {% include 'admin/partials/_period_selector.html.twig' with {
+                route_name: 'admin',
+                param_name: 'traffic_period',
+                current: trafficPeriod,
+                periods: periods,
+                other_params: {view: 'statistics', contact_period: contactPeriod},
+            } %}
+        </div>
         <svg viewBox="0 0 {{ chartWidth }} {{ chartHeight }}" class="kd-chart-svg" preserveAspectRatio="none">
             <line x1="24" y1="{{ chartHeight - 20 }}" x2="{{ chartWidth - 24 }}" y2="{{ chartHeight - 20 }}" class="kd-chart-axis"/>
 
@@ -51,7 +60,7 @@
             {% endif %}
 
             {% for p in chartPoints %}
-                {% if loop.index % 3 == 1 %}
+                {% if chartPoints|length <= 15 or loop.index % 5 == 1 %}
                     <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
                 {% endif %}
                 {% if p.count > 0 %}
@@ -128,7 +137,16 @@
 
     <div class="kd-grid">
         <div class="kd-panel kd-panel--chart">
-            <h3 class="kd-panel__title">Demandes reçues — 6 derniers mois</h3>
+            <div class="kd-panel__head">
+                <h3 class="kd-panel__title">Demandes reçues</h3>
+                {% include 'admin/partials/_period_selector.html.twig' with {
+                    route_name: 'admin',
+                    param_name: 'contact_period',
+                    current: contactPeriod,
+                    periods: periods,
+                    other_params: {view: 'statistics', traffic_period: trafficPeriod},
+                } %}
+            </div>
             <svg viewBox="0 0 {{ chartWidth }} {{ chartHeight }}" class="kd-chart-svg" preserveAspectRatio="none">
                 <line x1="24" y1="{{ chartHeight - 20 }}" x2="{{ chartWidth - 24 }}" y2="{{ chartHeight - 20 }}" class="kd-chart-axis"/>
 
@@ -140,7 +158,9 @@
 
                 {% for p in contactChartPoints %}
                     <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4.5" class="kd-chart-point"/>
-                    <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
+                    {% if contactChartPoints|length <= 15 or loop.index % 5 == 1 %}
+                        <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
+                    {% endif %}
                     {% if p.count > 0 %}
                         <text x="{{ p.x }}" y="{{ p.y - 12 }}" text-anchor="middle" class="kd-chart-value">{{ p.count }}</text>
                     {% endif %}

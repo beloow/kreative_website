@@ -1,0 +1,15 @@
+{#
+    Sélecteur de période pour un graphique.
+    Variables attendues :
+    - route_name : nom de la route (toujours 'admin' désormais)
+    - param_name : nom du paramètre de requête à faire varier (ex: 'contact_period')
+    - current : la période actuellement sélectionnée
+    - periods : tableau associatif clé => libellé (TimeSeriesStats::PERIODS)
+    - other_params : (optionnel) les autres paramètres de requête à préserver (ex: l'autre période)
+#}
+<div class="kd-period-selector">
+    {% for key, label in periods %}
+        <a href="{{ path(route_name, (other_params|default({}))|merge({(param_name): key})) }}"
+           class="kd-period-btn {{ current == key ? 'is-active' }}">{{ label }}</a>
+    {% endfor %}
+</div>
