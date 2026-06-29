@@ -1,0 +1,10 @@
+{% set full_name = field.value|default('') %}
+{% set parts = full_name|split(' ') %}
+{% set initials = ((parts[0]|default(''))|slice(0, 1) ~ (parts[1]|default(''))|slice(0, 1))|upper %}
+{% set palette = ['#d2b48c', '#8FA0BC', '#b89568', '#6b8f7a', '#c98a6b'] %}
+{% set color = palette[entity.instance.id % palette|length] %}
+
+<div class="kc-row-name">
+    <span class="kc-avatar" style="background: {{ color }};">{{ initials }}</span>
+    <span class="kc-row-name__text">{{ full_name }}</span>
+</div>

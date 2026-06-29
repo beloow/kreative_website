@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Habillage EasyAdmin — couleurs Kreative Studio (navy #0A1726 + sable #d2b48c)
+   Cette feuille surcharge les variables CSS natives d'EasyAdmin (définies dans
+   easyadmin-theme/variables-theme.css) au lieu de réécrire les composants :
+   ça retinte boutons, menu actif, interrupteurs, pagination, colonnes triées
+   et badges sur TOUTES les pages admin (CRUD compris), sans rien casser.
+   ========================================================================== */
+
+:root {
+  /* Accent principal — remplace le indigo/bleu par défaut */
+  --color-primary: #d2b48c;
+  --link-color: #a9824f;
+  --link-color-rgb: 169, 130, 79;
+  --link-hover-color: #8a6a3f;
+  --link-hover-color-rgb: 138, 106, 63;
+
+  /* Bouton primaire ("Add Service", "Créer", etc.) */
+  --button-primary-bg: #d2b48c;
+  --button-primary-color: #0A1726;
+  --button-primary-border-color: transparent;
+  --button-primary-hover-bg: #c2a276;
+  --button-primary-hover-color: #0A1726;
+  --button-primary-hover-border-color: transparent;
+  --button-primary-active-bg: #b89568;
+  --button-primary-active-color: #0A1726;
+  --button-primary-active-border-color: transparent;
+  --button-primary-box-shadow: none;
+
+  /* Élément actif du menu latéral (mode clair) */
+  --sidebar-menu-active-item-bg: rgba(210, 180, 140, 0.18);
+  --sidebar-menu-active-item-color: #a9824f;
+
+  /* Interrupteurs (toggles "Visible sur le site", etc.) */
+  --form-switch-checked-bg: #d2b48c;
+  --form-type-check-input-checked-bg: #d2b48c;
+}
+
+.ea-dark-scheme {
+  /* Fonds — remplace les gris neutres par les tons navy du site */
+  --true-gray-950: #0A1726;
+  --true-gray-900: #11203A;
+  --true-gray-800: #16294A;
+
+  /* Accent principal en mode sombre */
+  --color-primary: #d2b48c;
+
+  /* Bouton primaire en mode sombre */
+  --button-primary-bg: #d2b48c;
+  --button-primary-color: #0A1726;
+  --button-primary-border-color: transparent;
+  --button-primary-hover-bg: #e8d9c2;
+  --button-primary-hover-color: #0A1726;
+  --button-primary-hover-border-color: transparent;
+  --button-primary-active-bg: #c2a276;
+  --button-primary-active-color: #0A1726;
+  --button-primary-active-border-color: transparent;
+  --button-primary-box-shadow: none;
+
+  /* Élément actif du menu latéral en mode sombre */
+  --sidebar-menu-active-item-bg: #d2b48c;
+  --sidebar-menu-active-item-color: #0A1726;
+
+  /* Interrupteurs en mode sombre */
+  --form-switch-checked-bg: #d2b48c;
+  --form-type-check-input-checked-bg: #d2b48c;
+
+  /* Pagination active (la page courante, en bas des listes) */
+  --pagination-active-bg: #d2b48c;
+  --pagination-active-color: #0A1726;
+
+  /* Badges "oui/non" (colonnes booléennes) */
+  --badge-boolean-true-bg: rgba(210, 180, 140, 0.18);
+  --badge-boolean-true-color: #d2b48c;
+}
+
+/* ---- Avatar avec initiales (champ "Nom" des demandes de contact) ---- */
+.kc-row-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.kc-avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0A1726;
+}
+.kc-row-name__text { font-weight: 600; }
+
+/* ---- Badge de statut façon "Active / Inactive" ---- */
+.kc-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.kc-tag--ok { background: rgba(63, 138, 93, 0.16); color: #5fb583; }
+.kc-tag--pending { background: rgba(210, 180, 140, 0.18); color: #d2b48c; }
+
+/* ---- Formulaire "Service", façon éditeur d'article WordPress ---- */
+
+/* Colonne principale (contenu) et colonne latérale (publication) */
+.kc-main-column { padding-right: 8px; }
+.kc-sidebar-column { padding-left: 8px; }
+
+/* Titre en grand, façon "Ajouter un titre" de WordPress */
+.kc-field-title label { display: none; }
+.kc-field-title .form-control {
+  font-size: 1.7rem;
+  font-weight: 700;
+  padding: 16px 18px;
+  border: none;
+  border-bottom: 2px solid var(--border-color, #e7e2d8);
+  border-radius: 0;
+  background: transparent;
+}
+.kc-field-title .form-control:focus {
+  box-shadow: none;
+  border-bottom-color: #d2b48c;
+}
+
+/* Zone de description, façon corps de l'éditeur */
+.kc-field-content .form-control {
+  font-size: 1rem;
+  line-height: 1.7;
+  padding: 18px;
+  border-radius: 10px;
+}
+
+/* Panneau "Publication", façon boîte WordPress (header + corps séparés) */
+.kc-publish-box.form-fieldset,
+.kc-publish-box .form-fieldset {
+  border: 1px solid #a9824f;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(210, 180, 140, 0.05);
+}
+.kc-publish-box .form-fieldset-header {
+  background: rgba(210, 180, 140, 0.12);
+  border-bottom: 1px solid #a9824f;
+  padding: 12px 16px;
+}
+.kc-publish-box .form-fieldset-title,
+.kc-publish-box .form-fieldset-title-content {
+  font-weight: 700;
+  color: #d2b48c;
+}
+.kc-publish-box .form-fieldset-icon { color: #d2b48c; }
+.kc-publish-box .form-fieldset-body { padding: 16px; }

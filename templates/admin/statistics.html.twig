@@ -1,0 +1,184 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Statistiques{% endblock %}
+
+{% block main %}
+<div class="kd">
+
+    <div class="kd-stats">
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Vues totales</span>
+            <span class="kd-stat-card__value">{{ totalViews }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Visiteurs uniques (total)</span>
+            <span class="kd-stat-card__value">{{ uniqueVisitorsTotal }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--ok">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Vues aujourd'hui</span>
+            <span class="kd-stat-card__value">{{ viewsToday }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--pending">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Vues ce mois-ci</span>
+            <span class="kd-stat-card__value">{{ viewsThisMonth }} <span class="kd-stat-card__sub">({{ uniqueVisitorsThisMonth }} visiteurs uniques)</span></span>
+        </div>
+    </div>
+
+    <div class="kd-panel kd-panel--chart" style="margin-bottom: 24px;">
+        <h3 class="kd-panel__title">Trafic — 30 derniers jours</h3>
+        <svg viewBox="0 0 {{ chartWidth }} {{ chartHeight }}" class="kd-chart-svg" preserveAspectRatio="none">
+            <line x1="24" y1="{{ chartHeight - 20 }}" x2="{{ chartWidth - 24 }}" y2="{{ chartHeight - 20 }}" class="kd-chart-axis"/>
+
+            {% if chartPoints|length > 1 %}
+                <polyline
+                    points="{% for p in chartPoints %}{{ p.x }},{{ p.y }} {% endfor %}"
+                    fill="none" class="kd-chart-line" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            {% endif %}
+
+            {% for p in chartPoints %}
+                {% if loop.index % 3 == 1 %}
+                    <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
+                {% endif %}
+                {% if p.count > 0 %}
+                    <circle cx="{{ p.x }}" cy="{{ p.y }}" r="3" class="kd-chart-point"/>
+                {% endif %}
+            {% endfor %}
+        </svg>
+        <p style="margin-top: 8px; font-size: 0.82rem; color: var(--kd-navy-soft);">
+            Suivi maison, sans cookies ni service tiers : on compte les chargements de page et on estime les visiteurs uniques via une empreinte anonyme (IP + navigateur + jour), jamais l'adresse IP en clair.
+        </p>
+    </div>
+
+    <div class="kd-panel kd-panel--table" style="margin-bottom: 24px;">
+        <div class="kd-panel__head">
+            <h3 class="kd-panel__title">Pages les plus visitées <span style="font-weight:400; color:var(--kd-navy-soft); font-size:0.85rem;">(30 derniers jours)</span></h3>
+        </div>
+        <table class="kd-table">
+            <thead>
+                <tr>
+                    <th>Page</th>
+                    <th>Vues</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for page in topPages %}
+                    <tr>
+                        <td><code>{{ page.path }}</code></td>
+                        <td>{{ page.count }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="kd-table__empty">Pas encore assez de données — reviens dans quelques jours.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="kd-panel__title" style="margin: 32px 0 16px;">Demandes de contact</h3>
+
+    <div class="kd-stats">
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Total des demandes</span>
+            <span class="kd-stat-card__value">{{ totalMessages }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Reçues ce mois-ci</span>
+            <span class="kd-stat-card__value">{{ messagesThisMonth }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--ok">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Traitées</span>
+            <span class="kd-stat-card__value">{{ handledMessages }} <span class="kd-stat-card__sub">({{ handledPercent }}%)</span></span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--pending">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <span class="kd-stat-card__label">En attente</span>
+            <span class="kd-stat-card__value">{{ pendingMessages }} <span class="kd-stat-card__sub">({{ pendingPercent }}%)</span></span>
+        </div>
+    </div>
+
+    <div class="kd-grid">
+        <div class="kd-panel kd-panel--chart">
+            <h3 class="kd-panel__title">Demandes reçues — 6 derniers mois</h3>
+            <svg viewBox="0 0 {{ chartWidth }} {{ chartHeight }}" class="kd-chart-svg" preserveAspectRatio="none">
+                <line x1="24" y1="{{ chartHeight - 20 }}" x2="{{ chartWidth - 24 }}" y2="{{ chartHeight - 20 }}" class="kd-chart-axis"/>
+
+                {% if contactChartPoints|length > 1 %}
+                    <polyline
+                        points="{% for p in contactChartPoints %}{{ p.x }},{{ p.y }} {% endfor %}"
+                        fill="none" class="kd-chart-line" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                {% endif %}
+
+                {% for p in contactChartPoints %}
+                    <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4.5" class="kd-chart-point"/>
+                    <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
+                    {% if p.count > 0 %}
+                        <text x="{{ p.x }}" y="{{ p.y - 12 }}" text-anchor="middle" class="kd-chart-value">{{ p.count }}</text>
+                    {% endif %}
+                {% endfor %}
+            </svg>
+        </div>
+
+        <div class="kd-panel kd-panel--status">
+            <h3 class="kd-panel__title">Statut des demandes</h3>
+
+            <div class="kd-bar-item">
+                <div class="kd-bar-item__head">
+                    <span>Traitées</span>
+                    <span>{{ handledMessages }} / {{ totalMessages }}</span>
+                </div>
+                <div class="kd-bar-track">
+                    <div class="kd-bar-fill kd-bar-fill--ok" style="width: {{ handledPercent }}%;"></div>
+                </div>
+            </div>
+
+            <div class="kd-bar-item">
+                <div class="kd-bar-item__head">
+                    <span>En attente</span>
+                    <span>{{ pendingMessages }} / {{ totalMessages }}</span>
+                </div>
+                <div class="kd-bar-track">
+                    <div class="kd-bar-fill kd-bar-fill--pending" style="width: {{ pendingPercent }}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="kd-stats" style="margin-top: 24px;">
+        <div class="kd-stat-card">
+            <span class="kd-stat-card__label">Services actifs</span>
+            <span class="kd-stat-card__value">{{ activeServices }} <span class="kd-stat-card__sub">/ {{ totalServices }}</span></span>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

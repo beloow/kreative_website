@@ -37,12 +37,12 @@ class ContactMessageCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('fullName', 'Nom'),
+            TextField::new('fullName', 'Nom')->setTemplatePath('admin/fields/contact_name.html.twig'),
             EmailField::new('email', 'E-mail'),
             TextField::new('company', 'Entreprise'),
             TextareaField::new('message', 'Message'),
             DateTimeField::new('createdAt', 'Reçu le')->setFormTypeOption('disabled', true),
-            BooleanField::new('isHandled', 'Traité'),
+            BooleanField::new('isHandled', 'Statut')->setTemplatePath('admin/fields/contact_status.html.twig'),
         ];
     }
 }

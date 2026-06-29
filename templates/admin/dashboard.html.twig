@@ -3,11 +3,128 @@
 {% block content_title %}Tableau de bord{% endblock %}
 
 {% block main %}
-    <div class="mt-4">
-        <p>Bienvenue dans l'espace d'administration de <strong>Kreative Studio</strong>.</p>
-        <ul>
-            <li><strong>Services</strong> — ajoute, modifie ou réordonne les offres affichées sur le site.</li>
-            <li><strong>Demandes de contact</strong> — consulte les leads reçus via le formulaire public.</li>
-        </ul>
+<div class="kd">
+
+    <div class="kd-stats">
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 002 2h1l3 5V4L6 9H5a2 2 0 00-2 2z"/><path d="M16 8a4 4 0 010 8"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Services actifs</span>
+            <span class="kd-stat-card__value">{{ activeServices }} <span class="kd-stat-card__sub">/ {{ totalServices }}</span></span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Demandes reçues</span>
+            <span class="kd-stat-card__value">{{ totalMessages }}</span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--ok">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <span class="kd-stat-card__label">Demandes traitées</span>
+            <span class="kd-stat-card__value">{{ handledMessages }} <span class="kd-stat-card__sub">({{ handledPercent }}%)</span></span>
+        </div>
+
+        <div class="kd-stat-card">
+            <div class="kd-stat-card__icon kd-stat-card__icon--pending">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <span class="kd-stat-card__label">En attente</span>
+            <span class="kd-stat-card__value">{{ pendingMessages }} <span class="kd-stat-card__sub">({{ pendingPercent }}%)</span></span>
+        </div>
     </div>
+
+    <div class="kd-grid">
+        <div class="kd-panel kd-panel--chart">
+            <h3 class="kd-panel__title">Demandes de contact — 6 derniers mois</h3>
+            <svg viewBox="0 0 {{ chartWidth }} {{ chartHeight }}" class="kd-chart-svg" preserveAspectRatio="none">
+                <line x1="24" y1="{{ chartHeight - 20 }}" x2="{{ chartWidth - 24 }}" y2="{{ chartHeight - 20 }}" class="kd-chart-axis"/>
+
+                {% if chartPoints|length > 1 %}
+                    <polyline
+                        points="{% for p in chartPoints %}{{ p.x }},{{ p.y }} {% endfor %}"
+                        fill="none" class="kd-chart-line" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                {% endif %}
+
+                {% for p in chartPoints %}
+                    <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4.5" class="kd-chart-point"/>
+                    <text x="{{ p.x }}" y="{{ chartHeight - 4 }}" text-anchor="middle" class="kd-chart-label">{{ p.label }}</text>
+                    {% if p.count > 0 %}
+                        <text x="{{ p.x }}" y="{{ p.y - 12 }}" text-anchor="middle" class="kd-chart-value">{{ p.count }}</text>
+                    {% endif %}
+                {% endfor %}
+            </svg>
+        </div>
+
+        <div class="kd-panel kd-panel--status">
+            <h3 class="kd-panel__title">Statut des demandes</h3>
+
+            <div class="kd-bar-item">
+                <div class="kd-bar-item__head">
+                    <span>Traitées</span>
+                    <span>{{ handledMessages }} / {{ totalMessages }}</span>
+                </div>
+                <div class="kd-bar-track">
+                    <div class="kd-bar-fill kd-bar-fill--ok" style="width: {{ handledPercent }}%;"></div>
+                </div>
+            </div>
+
+            <div class="kd-bar-item">
+                <div class="kd-bar-item__head">
+                    <span>En attente</span>
+                    <span>{{ pendingMessages }} / {{ totalMessages }}</span>
+                </div>
+                <div class="kd-bar-track">
+                    <div class="kd-bar-fill kd-bar-fill--pending" style="width: {{ pendingPercent }}%;"></div>
+                </div>
+            </div>
+
+            <a href="{{ messagesIndexUrl }}" class="kd-link-more">Voir toutes les demandes →</a>
+        </div>
+    </div>
+
+    <div class="kd-panel kd-panel--table">
+        <div class="kd-panel__head">
+            <h3 class="kd-panel__title">Dernières demandes de contact</h3>
+            <a href="{{ messagesIndexUrl }}" class="kd-btn">Voir tout →</a>
+        </div>
+
+        <table class="kd-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>E-mail</th>
+                    <th>Entreprise</th>
+                    <th>Reçu le</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in recentMessages %}
+                    <tr>
+                        <td>{{ message.fullName }}</td>
+                        <td>{{ message.email }}</td>
+                        <td>{{ message.company ?: '—' }}</td>
+                        <td>{{ message.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <span class="kd-badge {{ message.handled ? 'kd-badge--ok' : 'kd-badge--pending' }}">
+                                {{ message.handled ? 'Traité' : 'En attente' }}
+                            </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="kd-table__empty">Aucune demande pour le moment.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 {% endblock %}
