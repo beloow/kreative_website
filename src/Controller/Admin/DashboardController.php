@@ -2,20 +2,29 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use App\Entity\ContactMessage;
 use App\Entity\PageView;
-use App\Entity\Service;
 use App\Entity\User;
+use App\Form\AdminThemeSettingsType;
+use App\Form\GeneralSettingsType;
+use App\Form\SiteThemeSettingsType;
 use App\Repository\ContactMessageRepository;
 use App\Repository\PageViewRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\SiteSettingRepository;
+use App\Service\ThemeCssGenerator;
 use App\Service\TimeSeriesStats;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\ColorScheme;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,9 +47,13 @@ class DashboardController extends AbstractDashboardController
         private readonly ServiceRepository $serviceRepository,
         private readonly ContactMessageRepository $contactMessageRepository,
         private readonly PageViewRepository $pageViewRepository,
+        private readonly SiteSettingRepository $siteSettingRepository,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly TimeSeriesStats $timeSeriesStats,
+        private readonly ThemeCssGenerator $themeCssGenerator,
+        private readonly EntityManagerInterface $entityManager,
         private readonly RequestStack $requestStack,
+        private readonly string $publicDir,
     ) {
     }
 
@@ -54,18 +67,21 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $request = $this->requestStack->getCurrentRequest();
+        $view = $request?->query->get('view');
 
-        if ('statistics' === $request?->query->get('view')) {
-            return $this->renderStatistics($request);
-        }
-
-        return $this->renderDashboard($request);
+        return match ($view) {
+            'statistics' => $this->renderStatistics($request),
+            'settings-general' => $this->renderSettingsGeneral($request),
+            'settings-theme-site' => $this->renderSettingsThemeSite($request),
+            'settings-theme-admin' => $this->renderSettingsThemeAdmin($request),
+            default => $this->renderDashboard($request),
+        };
     }
 
     private function renderDashboard(?Request $request): Response
     {
-        $totalServices = $this->serviceRepository->count([]);
-        $activeServices = $this->serviceRepository->count(['isActive' => true]);
+        $totalServices = $this->serviceRepository->countNotTrashed();
+        $activeServices = $this->serviceRepository->countActiveNotTrashed();
 
         $totalMessages = $this->contactMessageRepository->count([]);
         $handledMessages = $this->contactMessageRepository->count(['isHandled' => true]);
@@ -117,8 +133,8 @@ class DashboardController extends AbstractDashboardController
 
         $topPages = $this->pageViewRepository->topPagesSince($last30DaysStart, 8);
 
-        $totalServices = $this->serviceRepository->count([]);
-        $activeServices = $this->serviceRepository->count(['isActive' => true]);
+        $totalServices = $this->serviceRepository->countNotTrashed();
+        $activeServices = $this->serviceRepository->countActiveNotTrashed();
 
         $totalMessages = $this->contactMessageRepository->count([]);
         $handledMessages = $this->contactMessageRepository->count(['isHandled' => true]);
@@ -163,6 +179,90 @@ class DashboardController extends AbstractDashboardController
         ]);
     }
 
+    private function renderSettingsGeneral(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $settings = $this->siteSettingRepository->getSettings();
+        $form = $this->createForm(GeneralSettingsType::class, $settings);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $faviconFile */
+            $faviconFile = $form->get('faviconFile')->getData();
+
+            if ($faviconFile instanceof UploadedFile) {
+                $uploadDir = $this->publicDir.'/uploads/branding';
+                $newFilename = 'favicon-'.bin2hex(random_bytes(6)).'.'.$faviconFile->guessExtension();
+                $faviconFile->move($uploadDir, $newFilename);
+
+                $previousFilename = $settings->getFaviconFilename();
+                if ($previousFilename && is_file($uploadDir.'/'.$previousFilename)) {
+                    @unlink($uploadDir.'/'.$previousFilename);
+                }
+
+                $settings->setFaviconFilename($newFilename);
+            }
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Réglages généraux enregistrés.');
+
+            return $this->redirectToRoute('admin', ['view' => 'settings-general']);
+        }
+
+        return $this->render('admin/settings_general.html.twig', [
+            'form' => $form,
+            'settings' => $settings,
+        ]);
+    }
+
+    private function renderSettingsThemeSite(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $settings = $this->siteSettingRepository->getSettings();
+        $form = $this->createForm(SiteThemeSettingsType::class, $settings);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+            $this->themeCssGenerator->generate($settings);
+
+            $this->addFlash('success', 'Thème du site mis à jour : les couleurs et polices sont appliquées immédiatement sur le site public.');
+
+            return $this->redirectToRoute('admin', ['view' => 'settings-theme-site']);
+        }
+
+        return $this->render('admin/settings_theme_site.html.twig', [
+            'form' => $form,
+            'settings' => $settings,
+        ]);
+    }
+
+    private function renderSettingsThemeAdmin(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $settings = $this->siteSettingRepository->getSettings();
+        $form = $this->createForm(AdminThemeSettingsType::class, $settings);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+            $this->themeCssGenerator->generate($settings);
+
+            $this->addFlash('success', 'Thème de l\'admin mis à jour. Recharge la page pour voir le nouveau mode d\'affichage.');
+
+            return $this->redirectToRoute('admin', ['view' => 'settings-theme-admin']);
+        }
+
+        return $this->render('admin/settings_theme_admin.html.twig', [
+            'form' => $form,
+            'settings' => $settings,
+        ]);
+    }
+
     /**
      * @param array<int, array{label: string, count: int}> $counts
      *
@@ -195,25 +295,55 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
+        $settings = $this->siteSettingRepository->getSettings();
+        $faviconPath = $settings->getFaviconFilename()
+            ? 'uploads/branding/'.$settings->getFaviconFilename()
+            : 'favicon.svg';
+
+        $colorScheme = match ($settings->getAdminColorScheme()) {
+            'light' => ColorScheme::LIGHT,
+            'auto' => ColorScheme::AUTO,
+            default => ColorScheme::DARK,
+        };
+
         return Dashboard::new()
-            ->setTitle('Kreative Studio — Administration')
-            ->setFaviconPath('favicon.svg');
+            ->setTitle($settings->getLogoText().' — Administration')
+            ->setFaviconPath($faviconPath)
+            ->setDefaultColorScheme($colorScheme);
     }
 
     public function configureAssets(): Assets
     {
         return Assets::new()
             ->addCssFile('css/admin-theme.css')
+            ->addCssFile('css/admin-theme-vars.css')
             ->addCssFile('css/admin-dashboard.css');
     }
 
     public function configureMenuItems(): iterable
     {
+        $servicesUrl = $this->adminUrlGenerator
+            ->setController(ServiceCrudController::class)
+            ->setAction(Crud::PAGE_INDEX)
+            ->generateUrl();
+
+        $trashUrl = $this->adminUrlGenerator
+            ->setController(ServiceTrashCrudController::class)
+            ->setAction(Crud::PAGE_INDEX)
+            ->generateUrl();
+
         yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
         yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'admin', ['view' => 'statistics']);
-        yield MenuItem::linkToCrud('Services', 'fa fa-bullhorn', Service::class);
+        yield MenuItem::linkToUrl('Services', 'fa fa-bullhorn', $servicesUrl);
+        yield MenuItem::linkToCrud('Catégories', 'fa fa-tags', Category::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToUrl('Corbeille', 'fa fa-trash', $trashUrl);
         yield MenuItem::linkToCrud('Demandes de contact', 'fa fa-envelope', ContactMessage::class);
         yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-users', User::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::subMenu('Réglages', 'fa fa-cog')->setPermission('ROLE_ADMIN')->setSubItems([
+            MenuItem::linkToRoute('Général', 'fa fa-sliders-h', 'admin', ['view' => 'settings-general']),
+            MenuItem::linkToRoute('Thème du site', 'fa fa-paint-brush', 'admin', ['view' => 'settings-theme-site']),
+            MenuItem::linkToRoute('Thème de l\'admin', 'fa fa-moon', 'admin', ['view' => 'settings-theme-admin']),
+        ]);
         yield MenuItem::linkToUrl('Voir le site', 'fa fa-globe', '/');
     }
 }

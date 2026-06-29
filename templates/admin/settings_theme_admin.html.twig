@@ -1,0 +1,37 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Réglages — Thème de l'admin{% endblock %}
+
+{% block main %}
+<div class="kd">
+    <div class="kd-panel" style="max-width: 640px;">
+        <h3 class="kd-panel__title">Apparence de l'espace d'administration</h3>
+        <p style="color: var(--kd-navy-soft); margin-bottom: 24px; font-size: 0.9rem;">
+            N'affecte que cet espace d'administration — pas le site public.
+        </p>
+
+        {{ form_start(form) }}
+            <div class="kd-form-row">
+                {{ form_label(form.adminColorScheme) }}
+                {{ form_widget(form.adminColorScheme) }}
+                {% if form.adminColorScheme.vars.help %}<p class="kd-form-help">{{ form.adminColorScheme.vars.help|raw }}</p>{% endif %}
+            </div>
+
+            <div class="kd-form-row-pair">
+                <div class="kd-form-row">
+                    {{ form_label(form.adminColorAccent) }}
+                    {{ form_widget(form.adminColorAccent) }}
+                    {% if form.adminColorAccent.vars.help %}<p class="kd-form-help">{{ form.adminColorAccent.vars.help|raw }}</p>{% endif %}
+                </div>
+                <div class="kd-form-row">
+                    {{ form_label(form.adminColorBackground) }}
+                    {{ form_widget(form.adminColorBackground) }}
+                    {% if form.adminColorBackground.vars.help %}<p class="kd-form-help">{{ form.adminColorBackground.vars.help|raw }}</p>{% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="kd-btn">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

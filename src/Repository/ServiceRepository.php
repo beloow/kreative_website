@@ -20,8 +20,34 @@ class ServiceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.isActive = true')
+            ->andWhere('s.deletedAt IS NULL')
             ->orderBy('s.position', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Nombre total de services hors corbeille.
+     */
+    public function countNotTrashed(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->andWhere('s.deletedAt IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Nombre de services actifs (visibles sur le site) hors corbeille.
+     */
+    public function countActiveNotTrashed(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->andWhere('s.isActive = true')
+            ->andWhere('s.deletedAt IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

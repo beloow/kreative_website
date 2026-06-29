@@ -188,6 +188,80 @@
   color: var(--kd-navy);
 }
 
+/* ---- Formulaires de réglages ---- */
+.kd-form-row { margin-bottom: 22px; }
+.kd-form-row-pair { display: flex; gap: 24px; }
+.kd-form-row-pair .kd-form-row { flex: 1; }
+.kd-panel .kd-form-row label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--kd-navy) !important;
+  margin-bottom: 6px;
+}
+.kd-panel .kd-form-row input[type="text"],
+.kd-panel .kd-form-row input[type="email"] {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff !important;
+  color: var(--kd-navy) !important;
+  border: 1px solid var(--kd-card-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-shadow: none !important;
+}
+.kd-panel .kd-form-row input[type="text"]::placeholder,
+.kd-panel .kd-form-row input[type="email"]::placeholder {
+  color: #9aa0ab;
+}
+.kd-panel .kd-form-row input[type="text"]:focus,
+.kd-panel .kd-form-row input[type="email"]:focus {
+  border-color: var(--kd-tan-dark);
+  outline: none;
+}
+.kd-panel .kd-form-row input[type="color"] {
+  width: 64px;
+  height: 40px;
+  padding: 2px;
+  background: #ffffff !important;
+  border: 1px solid var(--kd-card-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.kd-panel .kd-form-row select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff !important;
+  color: var(--kd-navy) !important;
+  border: 1px solid var(--kd-card-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-shadow: none !important;
+}
+.kd-panel .kd-form-row input[type="file"] {
+  color: var(--kd-navy) !important;
+  margin-top: 4px;
+}
+.kd-panel .kd-form-help {
+  font-size: 0.8rem;
+  color: var(--kd-navy-soft) !important;
+  margin: 6px 0 0;
+}
+.kd-panel .kd-form-help a { color: var(--kd-tan-dark) !important; }
+.kd-panel .kd-favicon-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--kd-navy-soft) !important;
+}
+.kd-panel .kd-favicon-preview img {
+  border-radius: 6px;
+  border: 1px solid var(--kd-card-border);
+  background: #fff;
+}
+
 .kd-badge {
   display: inline-block;
   font-size: 0.78rem;

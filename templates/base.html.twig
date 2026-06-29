@@ -1,15 +1,22 @@
+{% set settings = site_settings() %}
+{% set logoParts = settings.logoText|split('·') %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Kreative Studio — Marketing digital pour PME{% endblock %}</title>
-    <meta name="description" content="Kreative Studio délègue votre marketing digital : SEO, publicité, contenu et réseaux sociaux, pensés pour les PME qui veulent grandir sans recruter une équipe complète.">
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <title>{% block title %}{{ settings.logoText }} — Marketing digital pour PME{% endblock %}</title>
+    <meta name="description" content="{{ settings.logoText }} délègue votre marketing digital : SEO, publicité, contenu et réseaux sociaux, pensés pour les PME qui veulent grandir sans recruter une équipe complète.">
+    {% if settings.faviconFilename %}
+        <link rel="icon" href="{{ asset('uploads/branding/' ~ settings.faviconFilename) }}">
+    {% else %}
+        <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    {% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family={{ settings.fontHeading|url_encode }}:opsz,wght@9..144,500;9..144,600;9..144,700&family={{ settings.fontBody|url_encode }}:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/theme-vars.css') }}">
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -18,10 +25,14 @@
         <a href="{{ path('home') }}" class="brand">
             <svg class="brand__mark" width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <rect width="64" height="64" rx="14" fill="#11203A"/>
-                <path d="M14 42 L26 28 L36 36 L50 18" stroke="#d2b48c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="50" cy="18" r="4" fill="#d2b48c"/>
+                <path d="M14 42 L26 28 L36 36 L50 18" stroke="var(--color-accent)" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="50" cy="18" r="4" fill="var(--color-accent)"/>
             </svg>
-            kreative<span class="brand__dot">·</span>studio
+            {% if logoParts|length == 2 %}
+                {{ logoParts[0] }}<span class="brand__dot">·</span>{{ logoParts[1] }}
+            {% else %}
+                {{ settings.logoText }}
+            {% endif %}
         </a>
         <nav class="nav">
             <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navPanel">
@@ -73,7 +84,7 @@
 <footer class="site-footer">
     <div class="container site-footer__inner">
         <div>
-            <div class="site-footer__brand">kreative·studio</div>
+            <div class="site-footer__brand">{{ settings.logoText }}</div>
             <p style="margin-top:6px;">Le marketing digital de votre PME, sans la lourdeur d'une équipe interne.</p>
         </div>
         <ul class="site-footer__links">
@@ -81,7 +92,7 @@
             <li><a href="{{ path('service_index') }}">Services</a></li>
             <li><a href="{{ path('contact') }}">Contact</a></li>
         </ul>
-        <div>© {{ "now"|date('Y') }} Kreative Studio</div>
+        <div>© {{ "now"|date('Y') }} {{ settings.logoText }}</div>
     </div>
 </footer>
 </body>

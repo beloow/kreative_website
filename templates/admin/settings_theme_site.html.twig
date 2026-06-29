@@ -1,0 +1,45 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Réglages — Thème du site{% endblock %}
+
+{% block main %}
+<div class="kd">
+    <div class="kd-panel" style="max-width: 640px;">
+        <h3 class="kd-panel__title">Couleurs &amp; typographies du site public</h3>
+        <p style="color: var(--kd-navy-soft); margin-bottom: 24px; font-size: 0.9rem;">
+            N'affecte que le site visible par tes visiteurs — pas l'espace d'administration.
+        </p>
+
+        {{ form_start(form) }}
+            <div class="kd-form-row-pair">
+                <div class="kd-form-row">
+                    {{ form_label(form.siteColorAccent) }}
+                    {{ form_widget(form.siteColorAccent) }}
+                    {% if form.siteColorAccent.vars.help %}<p class="kd-form-help">{{ form.siteColorAccent.vars.help|raw }}</p>{% endif %}
+                </div>
+                <div class="kd-form-row">
+                    {{ form_label(form.siteColorBackground) }}
+                    {{ form_widget(form.siteColorBackground) }}
+                    {% if form.siteColorBackground.vars.help %}<p class="kd-form-help">{{ form.siteColorBackground.vars.help|raw }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="kd-form-row">
+                {{ form_label(form.siteFontHeading) }}
+                {{ form_widget(form.siteFontHeading) }}
+                {% if form.siteFontHeading.vars.help %}<p class="kd-form-help">{{ form.siteFontHeading.vars.help|raw }}</p>{% endif %}
+                {{ form_errors(form.siteFontHeading) }}
+            </div>
+
+            <div class="kd-form-row">
+                {{ form_label(form.siteFontBody) }}
+                {{ form_widget(form.siteFontBody) }}
+                {% if form.siteFontBody.vars.help %}<p class="kd-form-help">{{ form.siteFontBody.vars.help|raw }}</p>{% endif %}
+                {{ form_errors(form.siteFontBody) }}
+            </div>
+
+            <button type="submit" class="kd-btn">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

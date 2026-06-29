@@ -4,6 +4,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            string $publicDir: '%kernel.project_dir%/public'
 
     App\:
         resource: '../src/'

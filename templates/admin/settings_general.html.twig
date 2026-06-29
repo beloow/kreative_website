@@ -1,0 +1,35 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Réglages — Général{% endblock %}
+
+{% block main %}
+<div class="kd">
+    <div class="kd-panel" style="max-width: 640px;">
+        <h3 class="kd-panel__title">Identité du site</h3>
+
+        {{ form_start(form) }}
+            <div class="kd-form-row">
+                {{ form_label(form.logoText) }}
+                {{ form_widget(form.logoText) }}
+                {% if form.logoText.vars.help %}<p class="kd-form-help">{{ form.logoText.vars.help|raw }}</p>{% endif %}
+                {{ form_errors(form.logoText) }}
+            </div>
+
+            <div class="kd-form-row">
+                {{ form_label(form.faviconFile) }}
+                {% if settings.faviconFilename %}
+                    <div class="kd-favicon-preview">
+                        <img src="{{ asset('uploads/branding/' ~ settings.faviconFilename) }}" alt="Favicon actuel" width="32" height="32">
+                        <span>Favicon actuel</span>
+                    </div>
+                {% endif %}
+                {{ form_widget(form.faviconFile) }}
+                {% if form.faviconFile.vars.help %}<p class="kd-form-help">{{ form.faviconFile.vars.help|raw }}</p>{% endif %}
+                {{ form_errors(form.faviconFile) }}
+            </div>
+
+            <button type="submit" class="kd-btn">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
