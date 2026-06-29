@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\ContactMessage;
 use App\Entity\Service;
+use App\Entity\User;
 use App\Repository\ContactMessageRepository;
 use App\Repository\ServiceRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -14,9 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_ADMIN')]
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
@@ -119,6 +118,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'admin_statistics');
         yield MenuItem::linkToCrud('Services', 'fa fa-bullhorn', Service::class);
         yield MenuItem::linkToCrud('Demandes de contact', 'fa fa-envelope', ContactMessage::class);
+        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-users', User::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToUrl('Voir le site', 'fa fa-globe', '/');
     }
 }

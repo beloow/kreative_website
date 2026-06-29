@@ -25,8 +25,9 @@ security:
                 target: home
 
     access_control:
-    - { path: ^/admin/login, roles: PUBLIC_ACCESS }
-    - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_COLLABORATOR] }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
+        ROLE_COLLABORATOR: ROLE_USER
