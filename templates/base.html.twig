@@ -24,16 +24,42 @@
             kreative<span class="brand__dot">·</span>studio
         </a>
         <nav class="nav">
-            <ul class="nav__links">
-                <li><a href="{{ path('home') }}" class="{{ app.request.attributes.get('_route') == 'home' ? 'is-active' }}">Accueil</a></li>
-                <li><a href="{{ path('about') }}" class="{{ app.request.attributes.get('_route') == 'about' ? 'is-active' }}">À propos</a></li>
-                <li><a href="{{ path('service_index') }}" class="{{ app.request.attributes.get('_route') == 'service_index' ? 'is-active' }}">Services</a></li>
-                <li><a href="{{ path('contact') }}" class="{{ app.request.attributes.get('_route') == 'contact' ? 'is-active' }}">Contact</a></li>
-            </ul>
-            <a href="{{ path('contact') }}" class="btn btn--primary nav__cta">Discutons de votre projet</a>
+            <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navPanel">
+                <svg id="navToggleIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="nav__panel" id="navPanel">
+                <ul class="nav__links">
+                    <li><a href="{{ path('home') }}" class="{{ app.request.attributes.get('_route') == 'home' ? 'is-active' }}">Accueil</a></li>
+                    <li><a href="{{ path('about') }}" class="{{ app.request.attributes.get('_route') == 'about' ? 'is-active' }}">À propos</a></li>
+                    <li><a href="{{ path('service_index') }}" class="{{ app.request.attributes.get('_route') == 'service_index' ? 'is-active' }}">Services</a></li>
+                    <li><a href="{{ path('contact') }}" class="{{ app.request.attributes.get('_route') == 'contact' ? 'is-active' }}">Contact</a></li>
+                </ul>
+                <a href="{{ path('contact') }}" class="btn btn--primary nav__cta">Discutons de votre projet</a>
+            </div>
         </nav>
     </div>
 </header>
+
+<script>
+    (function () {
+        var toggle = document.getElementById('navToggle');
+        var panel = document.getElementById('navPanel');
+        if (!toggle || !panel) return;
+
+        toggle.addEventListener('click', function () {
+            var isOpen = panel.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Ferme le menu automatiquement quand on clique sur un lien
+        panel.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                panel.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    })();
+</script>
 
 <main>
     {% for message in app.flashes('success') %}

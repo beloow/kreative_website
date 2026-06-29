@@ -25,6 +25,9 @@ class Service
     #[ORM\Column(length: 20)]
     private ?string $priceFrom = null; // ex: "à partir de 450€/mois"
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ctaUrl = null; // lien vers lequel le bouton "tarif" redirige (devis, contact, page externe...)
+
     #[ORM\Column]
     private int $position = 0;
 
@@ -80,6 +83,18 @@ class Service
     public function setPriceFrom(string $priceFrom): static
     {
         $this->priceFrom = $priceFrom;
+
+        return $this;
+    }
+
+    public function getCtaUrl(): ?string
+    {
+        return $this->ctaUrl;
+    }
+
+    public function setCtaUrl(?string $ctaUrl): static
+    {
+        $this->ctaUrl = $ctaUrl;
 
         return $this;
     }

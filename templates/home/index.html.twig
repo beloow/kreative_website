@@ -56,7 +56,7 @@
                     <div class="service-card__icon">{{ include('service/_icon.html.twig', {icon: service.icon}) }}</div>
                     <h3>{{ service.title }}</h3>
                     <p>{{ service.description }}</p>
-                    <span class="service-card__price">{{ service.priceFrom }}</span>
+                    <a href="{{ service.ctaUrl ?: path('contact') }}" class="service-card__price"{{ service.ctaUrl and 'http' in service.ctaUrl ? ' target="_blank" rel="noopener"' : '' }}>{{ service.priceFrom }} →</a>
                 </div>
             {% endfor %}
         </div>

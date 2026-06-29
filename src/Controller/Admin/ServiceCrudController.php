@@ -32,6 +32,8 @@ class ServiceCrudController extends AbstractCrudController
             TextField::new('icon', 'Icône')->setHelp('ex : growth, ads, content, seo, social, analytics'),
             TextareaField::new('description', 'Description'),
             TextField::new('priceFrom', 'Tarif indicatif'),
+            TextField::new('ctaUrl', 'Lien du bouton tarif')
+                ->setHelp('URL vers laquelle le bouton "tarif" redirige (ex: /contact, un lien Calendly, un PDF de devis...). Laisse vide pour rediriger vers la page Contact par défaut.'),
             IntegerField::new('position', 'Ordre d\'affichage'),
             BooleanField::new('isActive', 'Visible sur le site'),
         ];
