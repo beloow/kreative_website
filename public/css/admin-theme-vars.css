@@ -5,4 +5,5 @@
   --button-primary-bg: #d2b48c;
 }
 .kd { --kd-tan: #d2b48c; --kd-navy: #ffffff; }
-.kc-avatar, .kd-period-btn.is-active, .kc-tag--pending { background: #d2b48c; }
+.kc-avatar, .kd-period-btn.is-active { background: #d2b48c; }
+.kc-tag--pending { background: rgba(210, 180, 140, 0.18); color: #d2b48c; }

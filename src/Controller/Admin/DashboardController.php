@@ -8,6 +8,7 @@ use App\Entity\PageView;
 use App\Entity\User;
 use App\Form\AdminThemeSettingsType;
 use App\Form\GeneralSettingsType;
+use App\Form\SeoSettingsType;
 use App\Form\SiteThemeSettingsType;
 use App\Repository\ContactMessageRepository;
 use App\Repository\PageViewRepository;
@@ -74,6 +75,7 @@ class DashboardController extends AbstractDashboardController
             'settings-general' => $this->renderSettingsGeneral($request),
             'settings-theme-site' => $this->renderSettingsThemeSite($request),
             'settings-theme-admin' => $this->renderSettingsThemeAdmin($request),
+            'settings-seo' => $this->renderSettingsSeo($request),
             default => $this->renderDashboard($request),
         };
     }
@@ -263,6 +265,44 @@ class DashboardController extends AbstractDashboardController
         ]);
     }
 
+    private function renderSettingsSeo(Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $settings = $this->siteSettingRepository->getSettings();
+        $form = $this->createForm(SeoSettingsType::class, $settings);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile|null $ogImageFile */
+            $ogImageFile = $form->get('ogImageFile')->getData();
+
+            if ($ogImageFile instanceof UploadedFile) {
+                $uploadDir = $this->publicDir.'/uploads/branding';
+                $newFilename = 'og-'.bin2hex(random_bytes(6)).'.'.$ogImageFile->guessExtension();
+                $ogImageFile->move($uploadDir, $newFilename);
+
+                $previousFilename = $settings->getOgImageFilename();
+                if ($previousFilename && is_file($uploadDir.'/'.$previousFilename)) {
+                    @unlink($uploadDir.'/'.$previousFilename);
+                }
+
+                $settings->setOgImageFilename($newFilename);
+            }
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Réglages SEO enregistrés.');
+
+            return $this->redirectToRoute('admin', ['view' => 'settings-seo']);
+        }
+
+        return $this->render('admin/settings_seo.html.twig', [
+            'form' => $form,
+            'settings' => $settings,
+        ]);
+    }
+
     /**
      * @param array<int, array{label: string, count: int}> $counts
      *
@@ -333,16 +373,17 @@ class DashboardController extends AbstractDashboardController
             ->generateUrl();
 
         yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
-        yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'admin', ['view' => 'statistics']);
         yield MenuItem::linkToUrl('Services', 'fa fa-bullhorn', $servicesUrl);
-        yield MenuItem::linkToCrud('Catégories', 'fa fa-tags', Category::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToUrl('Corbeille', 'fa fa-trash', $trashUrl);
         yield MenuItem::linkToCrud('Demandes de contact', 'fa fa-envelope', ContactMessage::class);
-        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-users', User::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToRoute('Statistiques', 'fa fa-chart-line', 'admin', ['view' => 'statistics']);
+        yield MenuItem::linkToUrl('Corbeille', 'fa fa-trash', $trashUrl);
         yield MenuItem::subMenu('Réglages', 'fa fa-cog')->setPermission('ROLE_ADMIN')->setSubItems([
             MenuItem::linkToRoute('Général', 'fa fa-sliders-h', 'admin', ['view' => 'settings-general']),
+            MenuItem::linkToCrud('Utilisateurs', 'fa fa-users', User::class),
+            MenuItem::linkToCrud('Catégories', 'fa fa-tags', Category::class),
             MenuItem::linkToRoute('Thème du site', 'fa fa-paint-brush', 'admin', ['view' => 'settings-theme-site']),
             MenuItem::linkToRoute('Thème de l\'admin', 'fa fa-moon', 'admin', ['view' => 'settings-theme-admin']),
+            MenuItem::linkToRoute('SEO', 'fa fa-search', 'admin', ['view' => 'settings-seo']),
         ]);
         yield MenuItem::linkToUrl('Voir le site', 'fa fa-globe', '/');
     }

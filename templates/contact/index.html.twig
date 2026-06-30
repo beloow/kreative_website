@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contact — Kreative Studio{% endblock %}
+{% block title %}{{ site_settings().seoContactTitle }}{% endblock %}
+{% block meta_description %}{{ site_settings().seoContactDescription }}{% endblock %}
 
 {% block body %}
 <section class="section">
@@ -8,7 +9,7 @@
         <div class="contact-info">
             <span class="eyebrow">Contact</span>
             <h1>Parlons de votre croissance.</h1>
-            <p style="color:var(--color-text-muted); margin-bottom:32px;">Remplissez le formulaire, nous revenons vers vous en moins de 24h ouvrées avec un premier retour concret.</p>
+            <p style="color:var(--color-text-muted); margin-bottom:32px;">Remplissez le formulaire, nous revenons vers vous en moins de 48h ouvrées avec un premier retour concret.</p>
 
             <div class="contact-info__item">
                 <span class="eyebrow">E-mail</span>

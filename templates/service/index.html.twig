@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Services — Kreative Studio{% endblock %}
+{% block title %}{{ site_settings().seoServicesTitle }}{% endblock %}
+{% block meta_description %}{{ site_settings().seoServicesDescription }}{% endblock %}
 
 {% block body %}
 <section class="section">
@@ -11,6 +12,7 @@
             <p>Que vous ayez besoin d'un seul levier ou d'un accompagnement global, chaque offre est pensée pour des PME qui veulent des résultats mesurables sans gérer une équipe en interne.</p>
         </div>
 
+        <h2 class="visually-hidden">Liste de nos services</h2>
         <div class="services-grid">
             {% for service in services %}
                 <div class="service-card">

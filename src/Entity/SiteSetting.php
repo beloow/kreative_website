@@ -52,6 +52,34 @@ class SiteSetting
     #[ORM\Column(length: 10)]
     private string $adminColorScheme = self::SCHEME_DARK;
 
+    // ---- SEO ----
+    #[ORM\Column(length: 70)]
+    private string $seoHomeTitle = 'Kreative Studio — Marketing digital pour PME';
+
+    #[ORM\Column(length: 160)]
+    private string $seoHomeDescription = 'Kreative Studio délègue votre marketing digital : SEO, publicité, contenu et réseaux sociaux, pensés pour les PME qui veulent grandir sans recruter une équipe complète.';
+
+    #[ORM\Column(length: 70)]
+    private string $seoAboutTitle = 'À propos — Kreative Studio';
+
+    #[ORM\Column(length: 160)]
+    private string $seoAboutDescription = 'Kreative Studio accompagne les PME dans leur croissance digitale, avec la rigueur d\'une agence pour grands comptes et la souplesse d\'un studio à taille humaine.';
+
+    #[ORM\Column(length: 70)]
+    private string $seoServicesTitle = 'Services — Kreative Studio';
+
+    #[ORM\Column(length: 160)]
+    private string $seoServicesDescription = 'SEO, publicité en ligne, contenu, réseaux sociaux et reporting : découvrez nos services de marketing digital externalisé pour PME.';
+
+    #[ORM\Column(length: 70)]
+    private string $seoContactTitle = 'Contact — Kreative Studio';
+
+    #[ORM\Column(length: 160)]
+    private string $seoContactDescription = 'Parlons de votre croissance. Remplissez le formulaire, nous revenons vers vous en moins de 48h ouvrées.';
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ogImageFilename = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -161,6 +189,114 @@ class SiteSetting
     public function setAdminColorScheme(string $value): static
     {
         $this->adminColorScheme = $value;
+
+        return $this;
+    }
+
+    public function getSeoHomeTitle(): string
+    {
+        return $this->seoHomeTitle;
+    }
+
+    public function setSeoHomeTitle(string $value): static
+    {
+        $this->seoHomeTitle = $value;
+
+        return $this;
+    }
+
+    public function getSeoHomeDescription(): string
+    {
+        return $this->seoHomeDescription;
+    }
+
+    public function setSeoHomeDescription(string $value): static
+    {
+        $this->seoHomeDescription = $value;
+
+        return $this;
+    }
+
+    public function getSeoAboutTitle(): string
+    {
+        return $this->seoAboutTitle;
+    }
+
+    public function setSeoAboutTitle(string $value): static
+    {
+        $this->seoAboutTitle = $value;
+
+        return $this;
+    }
+
+    public function getSeoAboutDescription(): string
+    {
+        return $this->seoAboutDescription;
+    }
+
+    public function setSeoAboutDescription(string $value): static
+    {
+        $this->seoAboutDescription = $value;
+
+        return $this;
+    }
+
+    public function getSeoServicesTitle(): string
+    {
+        return $this->seoServicesTitle;
+    }
+
+    public function setSeoServicesTitle(string $value): static
+    {
+        $this->seoServicesTitle = $value;
+
+        return $this;
+    }
+
+    public function getSeoServicesDescription(): string
+    {
+        return $this->seoServicesDescription;
+    }
+
+    public function setSeoServicesDescription(string $value): static
+    {
+        $this->seoServicesDescription = $value;
+
+        return $this;
+    }
+
+    public function getSeoContactTitle(): string
+    {
+        return $this->seoContactTitle;
+    }
+
+    public function setSeoContactTitle(string $value): static
+    {
+        $this->seoContactTitle = $value;
+
+        return $this;
+    }
+
+    public function getSeoContactDescription(): string
+    {
+        return $this->seoContactDescription;
+    }
+
+    public function setSeoContactDescription(string $value): static
+    {
+        $this->seoContactDescription = $value;
+
+        return $this;
+    }
+
+    public function getOgImageFilename(): ?string
+    {
+        return $this->ogImageFilename;
+    }
+
+    public function setOgImageFilename(?string $value): static
+    {
+        $this->ogImageFilename = $value;
 
         return $this;
     }

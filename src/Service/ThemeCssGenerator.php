@@ -79,7 +79,8 @@ CSS;
 
         $css .= <<<CSS
 .kd { --kd-tan: {$settings->getAdminColorAccent()}; --kd-navy: {$settings->getAdminColorBackground()}; }
-.kc-avatar, .kd-period-btn.is-active, .kc-tag--pending { background: {$settings->getAdminColorAccent()}; }
+.kc-avatar, .kd-period-btn.is-active { background: {$settings->getAdminColorAccent()}; }
+.kc-tag--pending { background: {$this->toRgba($settings->getAdminColorAccent(), 0.18)}; color: {$settings->getAdminColorAccent()}; }
 CSS;
 
         $this->writeFile($this->publicDir.'/css/admin-theme-vars.css', $css);
@@ -115,5 +116,23 @@ CSS;
         $b = min(255, (int) ($b + (255 - $b) * 0.4));
 
         return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
+    /**
+     * Convertit une couleur hex en rgba() avec l'opacité donnée, en PHP plutôt
+     * qu'en CSS (color-mix()) pour rester compatible avec tous les navigateurs.
+     */
+    private function toRgba(string $hexColor, float $alpha): string
+    {
+        $hex = ltrim($hexColor, '#');
+        if (6 !== \strlen($hex)) {
+            return $hexColor;
+        }
+
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        return sprintf('rgba(%d, %d, %d, %s)', $r, $g, $b, $alpha);
     }
 }

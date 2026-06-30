@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}À propos — Kreative Studio{% endblock %}
+{% block title %}{{ site_settings().seoAboutTitle }}{% endblock %}
+{% block meta_description %}{{ site_settings().seoAboutDescription }}{% endblock %}
 
 {% block body %}
 <section class="section">
